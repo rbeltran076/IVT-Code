@@ -1,0 +1,75 @@
+// VARIABLES
+int trig1 = 9;
+int echo1 = 8;
+int trig2 = 7;
+int echo2 = 6;
+int motorPin1 = 10;
+int motorPin2 = 11;
+int led = 4;
+int counter = 0;
+int dist1, dist2, inten1, inten2;
+
+// SETUP
+void setup()
+{
+  Serial.begin (9600);
+  pinMode (trig1, OUTPUT);
+  pinMode (echo1, INPUT);
+  pinMode (led,OUTPUT);
+  pinMode(motorPin1, OUTPUT);
+  pinMode(motorPin2, OUTPUT);
+ 
+  analogWrite(motorPin1, 75);
+  analogWrite(motorPin2, 75);
+  delay(100);
+  analogWrite(motorPin1, 0);
+  analogWrite(motorPin2, 0);
+  delay(100);
+  analogWrite(motorPin1, 75);
+  analogWrite(motorPin2, 75);
+  delay(100);
+  analogWrite(motorPin1, 0);
+  analogWrite(motorPin2, 0);
+  delay(1000);
+}
+
+// MEASURE
+int measure(int trig, int echo)
+{
+  int tiempo;
+  digitalWrite (trig, LOW);
+  delay (30);
+  digitalWrite (trig, HIGH);
+  delay (100);
+  digitalWrite (trig, LOW);
+  tiempo = pulseIn (echo, HIGH);
+  return tiempo / 58;
+}
+
+// LOOP
+void loop()
+{
+  // Medidas de distancias 1 y 2
+  dist1 = measure(trig1, echo1);
+  dist2 = measure(trig2, echo2);
+  Serial.print("Distancia1 ");
+  Serial.println (dist1);
+  Serial.print("Distancia2 ");
+  Serial.println (dist2);
+
+  // Algor. de la intensidad
+  inten1 = 150 - dist1;
+  inten2 = 150 - dist2;
+  Serial.println(inten1);
+  Serial.println(inten2);
+  Serial.println("___________________________________________");
+ 
+  if (dist1 <= 150){
+    // Vibrar
+  analogWrite(motorPin1, inten1);
+  }
+
+  if (dist2 <= 150){
+  analogWrite(motorPin2, inten2);
+  }
+}
